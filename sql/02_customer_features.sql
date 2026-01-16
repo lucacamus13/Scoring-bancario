@@ -27,7 +27,8 @@ customer_transactions AS (
         AVG(transactionamount) AS avg_spend,
         MAX(transactionamount) AS max_spend,
         MIN(transactionamount) AS min_spend,
-        STDDEV(transactionamount) AS std_spend,
+        -- COALESCE: Si solo 1 transacción, STDDEV es NULL → usamos 0 (sin variación)
+        COALESCE(STDDEV(transactionamount), 0) AS std_spend,
         AVG(custaccountbalance) AS avg_balance,
         MIN(custaccountbalance) AS min_balance,
         MAX(custaccountbalance) AS max_balance,
@@ -58,6 +59,8 @@ SELECT
     t.max_spend,
     t.min_spend,
     t.std_spend,
+    -- Flag: 1 si el cliente tiene suficientes transacciones para calcular volatilidad
+    CASE WHEN t.total_transactions > 1 THEN 1 ELSE 0 END AS has_volatility_data,
     t.total_transactions,
     t.first_transaction_date,
     t.last_transaction_date,
@@ -65,7 +68,8 @@ SELECT
     t.unique_transaction_days,
     SAFE_DIVIDE(t.total_transactions, t.unique_transaction_days) AS transaction_frequency,
     SAFE_DIVIDE(t.avg_spend, t.avg_balance) AS spend_to_balance_ratio,
-    SAFE_DIVIDE(t.std_spend, t.avg_spend) AS spend_volatility,
+    -- Volatilidad: si std_spend es 0 (1 transacción), volatilidad = 0
+    COALESCE(SAFE_DIVIDE(t.std_spend, t.avg_spend), 0) AS spend_volatility,
     SAFE_DIVIDE(t.total_transactions, GREATEST(t.days_active, 1)) AS avg_daily_transactions,
     SAFE_DIVIDE(t.total_spend, GREATEST(t.days_active, 1)) AS avg_daily_spend,
     
@@ -93,11 +97,12 @@ SELECT
             ELSE 10
         END)
         +
+        -- Componente estabilidad: volatilidad 0 (1 trans) = máxima estabilidad
         (CASE 
-            WHEN SAFE_DIVIDE(t.std_spend, t.avg_spend) < 0.5 THEN 30
-            WHEN SAFE_DIVIDE(t.std_spend, t.avg_spend) < 1 THEN 25
-            WHEN SAFE_DIVIDE(t.std_spend, t.avg_spend) < 1.5 THEN 20
-            WHEN SAFE_DIVIDE(t.std_spend, t.avg_spend) < 2 THEN 15
+            WHEN COALESCE(SAFE_DIVIDE(t.std_spend, t.avg_spend), 0) < 0.5 THEN 30
+            WHEN COALESCE(SAFE_DIVIDE(t.std_spend, t.avg_spend), 0) < 1 THEN 25
+            WHEN COALESCE(SAFE_DIVIDE(t.std_spend, t.avg_spend), 0) < 1.5 THEN 20
+            WHEN COALESCE(SAFE_DIVIDE(t.std_spend, t.avg_spend), 0) < 2 THEN 15
             ELSE 10
         END)
     , 0) AS preliminary_credit_score,

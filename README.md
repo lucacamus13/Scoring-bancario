@@ -1,63 +1,110 @@
-# 🏦 NeoScore - Alternative Credit Scoring
+# 🏦 NeoScore - Behavioral Credit Scoring
 
-Sistema de scoring crediticio alternativo basado en comportamiento transaccional bancario.
+Sistema de scoring crediticio alternativo basado en **comportamiento transaccional**, no en saldo bancario.
 
 ## 🎯 Objetivo
 
-Evaluar el riesgo crediticio de usuarios utilizando exclusivamente su historial de transacciones bancarias, sin depender de burós de crédito tradicionales.
+Predecir el riesgo crediticio de clientes usando **únicamente su comportamiento de gasto**, sin depender del saldo en cuenta. Esto permite evaluar clientes nuevos sin historial de balance.
 
-## 🛠️ Stack Tecnológico
+## ⚠️ Problema Resuelto: Data Leakage
 
-| Componente | Tecnología |
-|------------|------------|
-| **Almacenamiento** | Google BigQuery |
-| **Procesamiento** | Python (Google Colab) |
-| **Machine Learning** | Scikit-learn, XGBoost |
-| **Visualización** | Matplotlib, Seaborn |
+Los modelos tradicionales usan el saldo (`avg_balance`) para predecir riesgo. Pero si el riesgo se define como `avg_balance < avg_spend`, el modelo "hace trampa" porque ya tiene la respuesta en los datos.
 
-## 📊 Dataset
+**Nuestra solución**: Eliminar todas las variables de balance y usar solo comportamiento.
 
-- **~1 millón** de transacciones bancarias
-- **9 variables**: ID cliente, fecha nacimiento, género, ubicación, balance, fecha/hora transacción, monto
+## 📊 Resultados del Modelo
+
+| Modelo | ROC-AUC | Gini | KS |
+|--------|---------|------|-----|
+| Logistic Regression | 0.6520 | 0.3039 | 0.2006 |
+| Random Forest | 0.6613 | 0.3227 | 0.2154 |
+| **XGBoost** 🏆 | **0.6640** | **0.3280** | **0.2206** |
+
+> ✅ AUC ~0.66 es un resultado **honesto y realista** para un modelo sin acceso al saldo.
+
+## 🔧 Stack Tecnológico
+
+- **Almacenamiento**: Google BigQuery
+- **Procesamiento**: Python (Google Colab)
+- **ML**: Scikit-learn, XGBoost
 
 ## 📁 Estructura del Proyecto
 
 ```
-├── notebooks/           # Jupyter notebooks (Colab)
-│   ├── 01_data_cleaning.ipynb
-│   ├── 02_eda.ipynb
-│   ├── 03_feature_engineering.ipynb
-│   ├── 04_modeling.ipynb
-│   └── 05_evaluation.ipynb
-├── sql/                 # Consultas BigQuery
-├── src/                 # Código Python reutilizable
-├── data/                # Diccionario de datos (datos no incluidos)
-├── reports/             # Reportes y visualizaciones
-└── docs/                # Documentación adicional
+NeoScore/
+├── notebooks/
+│   ├── limpieza-y-carga-a-query.ipynb  # ETL: CSV → BigQuery
+│   ├── 03_eda.ipynb                     # Análisis Exploratorio
+│   ├── 04_modeling.ipynb                # Modelos con balance (leakage)
+│   └── 05_behavioral_scoring.ipynb      # ⭐ Modelo final (honesto)
+├── sql/
+│   ├── 01_data_verification.sql         # Verificación de datos
+│   └── 02_customer_features.sql         # Feature engineering
+├── src/
+│   └── data_cleaning.py                 # Funciones de limpieza
+├── data/
+│   └── data_dictionary.md               # Diccionario de datos
+└── docs/
+    └── methodology.md                   # Metodología
 ```
 
-## 📈 Metodología
+## 🧠 Variables del Modelo Behavioral
 
-1. **Data Cleaning**: Sanitización de datos y carga a BigQuery
-2. **EDA**: Análisis exploratorio de datos
-3. **Feature Engineering**: Creación de características por cliente
-4. **Modeling**: Entrenamiento de modelos de clasificación
-5. **Evaluation**: Métricas específicas de scoring (ROC-AUC, Gini, KS)
+**EXCLUIDAS** (causan leakage):
+- `avg_balance`, `min_balance`, `max_balance`, `last_balance`
+- `spend_to_balance_ratio`
 
-## 🚀 Quick Start
+**INCLUIDAS** (solo comportamiento):
+| Variable | Descripción |
+|----------|-------------|
+| `age` | Edad del cliente |
+| `spending_volatility` | Variabilidad del gasto (std/avg) |
+| `transaction_density` | Transacciones por día activo |
+| `spending_consistency` | Regularidad de compras |
+| `avg_transaction_size` | Tamaño promedio de compra |
+| `total_transactions` | Total de transacciones |
+| `days_active` | Días con actividad |
 
-1. Clonar el repositorio
-2. Abrir notebooks en Google Colab
-3. Configurar proyecto en BigQuery
-4. Ejecutar notebooks en orden
+## 🚀 Cómo Ejecutar
+
+1. **Cargar datos a BigQuery**:
+   - Ejecutar `notebooks/limpieza-y-carga-a-query.ipynb` en Colab
+   - Esto crea la tabla `scoring_transacciones`
+
+2. **Crear features**:
+   - Ejecutar `sql/02_customer_features.sql` en BigQuery
+   - Esto crea la tabla `customer_features`
+
+3. **Entrenar modelo**:
+   - Ejecutar `notebooks/05_behavioral_scoring.ipynb` en Colab
+   - Obtener predicciones de riesgo
+
+## 📈 Ejemplo de Uso
+
+```python
+# Juan: cliente con comportamiento estable
+juan = {
+    'age': 35,
+    'spending_volatility': 0.40,  # Bajo (estable)
+    'transaction_density': 1.5,   # Alto (frecuente)
+    'spending_consistency': 0.80  # Alto (regular)
+}
+# Resultado: Probabilidad de riesgo = 23% → BAJO RIESGO ✅
+
+# María: cliente con comportamiento errático
+maria = {
+    'age': 28,
+    'spending_volatility': 2.5,   # Alto (errático)
+    'transaction_density': 0.3,   # Bajo (esporádico)
+    'spending_consistency': 0.30  # Bajo (irregular)
+}
+# Resultado: Probabilidad de riesgo = 78% → ALTO RIESGO ❌
+```
 
 ## 👤 Autor
 
-**Luca Camus** - Economista | Data Scientist en formación
+**Luca Camus** - Economista | Data Scientist
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue)](https://linkedin.com/in/lucacamus)
-[![GitHub](https://img.shields.io/badge/GitHub-Follow-black)](https://github.com/lucacamus13)
+---
 
-## 📄 Licencia
-
-MIT License - ver [LICENSE](LICENSE) para más detalles.
+*Proyecto desarrollado como parte del aprendizaje de Machine Learning aplicado a finanzas.*

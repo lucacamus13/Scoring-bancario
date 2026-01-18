@@ -155,19 +155,13 @@ Se entrenaron tres modelos con las mismas 14 features conductuales:
 
 ### 5.2 Comparación Visual de Métricas
 
-<!-- INSTRUCCIÓN: Exportar este gráfico desde Colab (Sección 9) -->
-<!-- Click derecho en el gráfico → "Save image as" → Guardar como "metricas_comparacion.png" en reports/figures/ -->
-
-![Comparación de Métricas - Behavioral Scoring Models](../reports/figures/metricas_comparacion.png)
+![Comparación de Métricas](metricas_comparacion.png)
 
 *Figura 1: Comparación de ROC-AUC, Gini y KS entre los tres modelos. XGBoost obtiene el mejor desempeño.*
 
 ### 5.3 Curvas ROC
 
-<!-- INSTRUCCIÓN: Exportar este gráfico desde Colab (Sección 9) -->
-<!-- Click derecho en el gráfico → "Save image as" → Guardar como "curvas_roc.png" en reports/figures/ -->
-
-![Curvas ROC - Behavioral Scoring Models](../reports/figures/curvas_roc.png)
+![Curvas ROC](curvas_roc.png)
 
 *Figura 2: Curvas ROC de los tres modelos. Todas superan la línea diagonal (clasificador aleatorio).*
 
@@ -181,10 +175,7 @@ Se entrenaron tres modelos con las mismas 14 features conductuales:
 
 ### 5.5 Variables Más Importantes
 
-<!-- INSTRUCCIÓN: Exportar este gráfico desde Colab (Sección 10) -->
-<!-- Click derecho en el gráfico → "Save image as" → Guardar como "feature_importance.png" en reports/figures/ -->
-
-![Feature Importance - XGBoost](../reports/figures/feature_importance.png)
+![Feature Importance](feature_importance.png)
 
 *Figura 3: Importancia de variables en el modelo XGBoost. Las variables de comportamiento de gasto dominan.*
 
@@ -211,10 +202,7 @@ Esto es consistente con la teoría de consumo: agentes con restricciones de liqu
 
 ## 6. Distribución del Riesgo en la Muestra
 
-<!-- INSTRUCCIÓN: Exportar este gráfico desde el notebook 03_eda.ipynb (Sección 4) -->
-<!-- Click derecho en el gráfico → "Save image as" → Guardar como "distribucion_riesgo.png" en reports/figures/ -->
-
-![Distribución de Clientes por Riesgo](../reports/figures/distribucion_riesgo.png)
+![Distribución de Riesgo](distribucion_riesgo.png)
 
 *Figura 4: Proporción de clientes de alto y bajo riesgo en el dataset.*
 
@@ -291,23 +279,6 @@ El enfoque behavioral puede complementar los métodos tradicionales de credit sc
 | `notebooks/03_eda.ipynb` | Análisis Exploratorio |
 | `notebooks/05_behavioral_scoring.ipynb` | Modelo final |
 | `sql/02_customer_features.sql` | Feature Engineering |
-
----
-
-## Instrucciones para Agregar Gráficos
-
-Para completar este documento con los gráficos:
-
-1. Abre el notebook `05_behavioral_scoring.ipynb` en Google Colab
-2. Ejecuta todas las celdas
-3. En cada gráfico, haz click derecho → "Save image as"
-4. Guarda las imágenes en la carpeta `reports/figures/` con los siguientes nombres:
-   - `metricas_comparacion.png` (Sección 9 del notebook)
-   - `curvas_roc.png` (Sección 9 del notebook)
-   - `feature_importance.png` (Sección 10 del notebook)
-   - `distribucion_riesgo.png` (Sección 4 del notebook 03_eda.ipynb)
-
-5. Una vez guardadas las imágenes, el documento mostrará los gráficos automáticamente.
 
 ---
 

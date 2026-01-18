@@ -153,7 +153,25 @@ Se entrenaron tres modelos con las mismas 14 features conductuales:
 | Random Forest | 0.6613 | 0.3227 | 0.2154 |
 | **XGBoost** | **0.6640** | **0.3280** | **0.2206** |
 
-### 5.2 Interpretación de Métricas
+### 5.2 Comparación Visual de Métricas
+
+<!-- INSTRUCCIÓN: Exportar este gráfico desde Colab (Sección 9) -->
+<!-- Click derecho en el gráfico → "Save image as" → Guardar como "metricas_comparacion.png" en reports/figures/ -->
+
+![Comparación de Métricas - Behavioral Scoring Models](../reports/figures/metricas_comparacion.png)
+
+*Figura 1: Comparación de ROC-AUC, Gini y KS entre los tres modelos. XGBoost obtiene el mejor desempeño.*
+
+### 5.3 Curvas ROC
+
+<!-- INSTRUCCIÓN: Exportar este gráfico desde Colab (Sección 9) -->
+<!-- Click derecho en el gráfico → "Save image as" → Guardar como "curvas_roc.png" en reports/figures/ -->
+
+![Curvas ROC - Behavioral Scoring Models](../reports/figures/curvas_roc.png)
+
+*Figura 2: Curvas ROC de los tres modelos. Todas superan la línea diagonal (clasificador aleatorio).*
+
+### 5.4 Interpretación de Métricas
 
 | Métrica | Valor Obtenido | Interpretación |
 |---------|----------------|----------------|
@@ -161,7 +179,14 @@ Se entrenaron tres modelos con las mismas 14 features conductuales:
 | Gini = 0.328 | > 0.30 es aceptable | Discriminación razonable |
 | KS = 0.221 | > 0.20 es útil | Separación de distribuciones |
 
-### 5.3 Variables Más Importantes
+### 5.5 Variables Más Importantes
+
+<!-- INSTRUCCIÓN: Exportar este gráfico desde Colab (Sección 10) -->
+<!-- Click derecho en el gráfico → "Save image as" → Guardar como "feature_importance.png" en reports/figures/ -->
+
+![Feature Importance - XGBoost](../reports/figures/feature_importance.png)
+
+*Figura 3: Importancia de variables en el modelo XGBoost. Las variables de comportamiento de gasto dominan.*
 
 El modelo XGBoost identificó las siguientes features como más predictivas:
 
@@ -173,7 +198,7 @@ El modelo XGBoost identificó las siguientes features como más predictivas:
 | 4 | `transaction_density` | 0.11 | Frecuencia de uso |
 | 5 | `age` | 0.10 | Factor demográfico |
 
-### 5.4 Hallazgo Económico
+### 5.6 Hallazgo Económico
 
 Los clientes de **alto riesgo** tienden a mostrar:
 - Mayor **volatilidad** en sus gastos (comportamiento errático)
@@ -184,7 +209,18 @@ Esto es consistente con la teoría de consumo: agentes con restricciones de liqu
 
 ---
 
-## 6. Ejemplo de Aplicación
+## 6. Distribución del Riesgo en la Muestra
+
+<!-- INSTRUCCIÓN: Exportar este gráfico desde el notebook 03_eda.ipynb (Sección 4) -->
+<!-- Click derecho en el gráfico → "Save image as" → Guardar como "distribucion_riesgo.png" en reports/figures/ -->
+
+![Distribución de Clientes por Riesgo](../reports/figures/distribucion_riesgo.png)
+
+*Figura 4: Proporción de clientes de alto y bajo riesgo en el dataset.*
+
+---
+
+## 7. Ejemplo de Aplicación
 
 ### Cliente: Juan (Bajo Riesgo)
 
@@ -208,15 +244,15 @@ Esto es consistente con la teoría de consumo: agentes con restricciones de liqu
 
 ---
 
-## 7. Limitaciones y Trabajo Futuro
+## 8. Limitaciones y Trabajo Futuro
 
-### 7.1 Limitaciones
+### 8.1 Limitaciones
 
 1. **Definición de riesgo**: El target (`high_risk_flag`) es una proxy basada en balance vs. gasto, no en defaults reales
 2. **Muestra**: Dataset de un solo país y período temporal
 3. **Variables omitidas**: No se incluyen variables macroeconómicas ni de ingreso
 
-### 7.2 Extensiones Posibles
+### 8.2 Extensiones Posibles
 
 1. **Incorporar datos de default real**: Usar información de préstamos impagos como target
 2. **Análisis temporal**: Evaluar estabilidad del modelo en diferentes períodos económicos
@@ -225,7 +261,7 @@ Esto es consistente con la teoría de consumo: agentes con restricciones de liqu
 
 ---
 
-## 8. Conclusiones
+## 9. Conclusiones
 
 Este proyecto demuestra que:
 
@@ -255,6 +291,23 @@ El enfoque behavioral puede complementar los métodos tradicionales de credit sc
 | `notebooks/03_eda.ipynb` | Análisis Exploratorio |
 | `notebooks/05_behavioral_scoring.ipynb` | Modelo final |
 | `sql/02_customer_features.sql` | Feature Engineering |
+
+---
+
+## Instrucciones para Agregar Gráficos
+
+Para completar este documento con los gráficos:
+
+1. Abre el notebook `05_behavioral_scoring.ipynb` en Google Colab
+2. Ejecuta todas las celdas
+3. En cada gráfico, haz click derecho → "Save image as"
+4. Guarda las imágenes en la carpeta `reports/figures/` con los siguientes nombres:
+   - `metricas_comparacion.png` (Sección 9 del notebook)
+   - `curvas_roc.png` (Sección 9 del notebook)
+   - `feature_importance.png` (Sección 10 del notebook)
+   - `distribucion_riesgo.png` (Sección 4 del notebook 03_eda.ipynb)
+
+5. Una vez guardadas las imágenes, el documento mostrará los gráficos automáticamente.
 
 ---
 

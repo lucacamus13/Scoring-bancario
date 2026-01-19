@@ -1,4 +1,4 @@
-# 🏦 NeoScore - Behavioral Credit Scoring
+#  NeoScore - Behavioral Credit Scoring
 
 *Revolutionizing Credit with Honest, Behavior-Driven Insights*
 
@@ -17,17 +17,17 @@
 
 ---
 
-## 🎯 Objetivo
+##  Objetivo
 
 Predecir el riesgo crediticio de clientes usando **únicamente su comportamiento de gasto**, sin depender del saldo en cuenta. Esto permite evaluar clientes nuevos sin historial de balance.
 
-## ⚠️ Problema Resuelto: Data Leakage
+##  Problema Resuelto: Data Leakage
 
 Los modelos tradicionales usan el saldo (`avg_balance`) para predecir riesgo. Pero si el riesgo se define como `avg_balance < avg_spend`, el modelo "hace trampa" porque ya tiene la respuesta en los datos.
 
 **Nuestra solución**: Eliminar todas las variables de balance y usar solo comportamiento.
 
-## 📊 Resultados del Modelo
+##  Resultados del Modelo
 
 | Modelo | ROC-AUC | Gini | KS |
 |--------|---------|------|-----|
@@ -35,15 +35,15 @@ Los modelos tradicionales usan el saldo (`avg_balance`) para predecir riesgo. Pe
 | Random Forest | 0.6613 | 0.3227 | 0.2154 |
 | **XGBoost** 🏆 | **0.6640** | **0.3280** | **0.2206** |
 
-> ✅ AUC ~0.66 es un resultado **honesto y realista** para un modelo sin acceso al saldo.
+>  AUC ~0.66 es un resultado **honesto y realista** para un modelo sin acceso al saldo.
 
-## 🔧 Stack Tecnológico
+##  Stack Tecnológico
 
 - **Almacenamiento**: Google BigQuery
 - **Procesamiento**: Python (Google Colab)
 - **ML**: Scikit-learn, XGBoost
 
-## 📁 Estructura del Proyecto
+##  Estructura del Proyecto
 
 ```
 NeoScore/
@@ -63,7 +63,7 @@ NeoScore/
     └── methodology.md                   # Metodología
 ```
 
-## 🧠 Variables del Modelo Behavioral
+##  Variables del Modelo Behavioral
 
 **EXCLUIDAS** (causan leakage):
 - `avg_balance`, `min_balance`, `max_balance`, `last_balance`
@@ -80,7 +80,7 @@ NeoScore/
 | `total_transactions` | Total de transacciones |
 | `days_active` | Días con actividad |
 
-## 🚀 Cómo Ejecutar
+##  Cómo Ejecutar
 
 1. **Cargar datos a BigQuery**:
    - Ejecutar `notebooks/limpieza-y-carga-a-query.ipynb` en Colab
@@ -94,7 +94,7 @@ NeoScore/
    - Ejecutar `notebooks/05_behavioral_scoring.ipynb` en Colab
    - Obtener predicciones de riesgo
 
-## 📈 Ejemplo de Uso
+##  Ejemplo de Uso
 
 ```python
 # Juan: cliente con comportamiento estable
@@ -116,9 +116,9 @@ maria = {
 # Resultado: Probabilidad de riesgo = 78% → ALTO RIESGO ❌
 ```
 
-## 👤 Autor
+##  Autor
 
-**Luca Camus** - Economista | Data Scientist
+**Luca Camus** - Economista 
 
 ---
 
